@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Smart Medicine Reminder - Never miss your medication again">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>MediRemind Pro - Smart Medicine Tracker</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="[fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap)" rel="stylesheet">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="[cdnjs.cloudflare.com](https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css)">
+    
+    <!-- Lottie Animations -->
+    <script src="[unpkg.com](https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js)"></script>
+    
+    <!-- Chart.js -->
+    <script src="[cdn.jsdelivr.net](https://cdn.jsdelivr.net/npm/chart.js)"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="logo-container animate__animated animate__bounceIn">
+                <div class="pill-logo">
+                    <div class="pill-half pill-left"></div>
+                    <div class="pill-half pill-right"></div>
+                    <div class="pill-shine"></div>
+                </div>
+            </div>
+            <h1 class="splash-title animate__animated animate__fadeInUp animate__delay-1s">MediRemind Pro</h1>
+            <p class="splash-subtitle animate__animated animate__fadeInUp animate__delay-1s">Your Health, Our Priority</p>
+            <div class="loading-dots animate__animated animate__fadeIn animate__delay-2s">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="splash-particles" id="particles"></div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container hidden">
+        <!-- Animated Background -->
+        <div class="animated-bg">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <div class="gradient-orb orb-3"></div>
+        </div>
+
+        <!-- Header -->
+        <header class="app-header glass-effect">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="mini-logo">
+                        <div class="mini-pill">
+                            <div class="mini-pill-half left"></div>
+                            <div class="mini-pill-half right"></div>
+                        </div>
+                    </div>
+                    <div class="header-text">
+                        <h1>MediRemind</h1>
+                        <span class="header-badge">PRO</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+                        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+                        </svg>
+                        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                    <button id="notification-btn" class="icon-btn pulse-ring" aria-label="Notifications">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="notification-badge" id="notif-count">0</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Greeting Section -->
+            <section class="greeting-section animate__animated animate__fadeInDown">
+                <div class="greeting-card glass-effect">
+                    <div class="greeting-info">
+                        <p class="greeting-time" id="greeting-time">Good Morning</p>
+                        <h2 class="greeting-name" id="user-name">Welcome!</h2>
+                        <p class="greeting-date" id="current-date"></p>
+                    </div>
+                    <div class="greeting-avatar" id="avatar-container">
+                        <div class="avatar-ring">
+                            <div class="avatar-inner">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Stats -->
+            <section class="stats-section animate__animated animate__fadeInUp">
+                <div class="stats-grid">
+                    <div class="stat-card glass-effect" data-stat="today">
+                        <div class="stat-icon-wrapper gradient-1">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="today-count">0</span>
+                            <span class="stat-label">Today's Meds</span>
+                        </div>
+                        <div class="stat-progress">
+                            <div class="progress-ring" id="today-progress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card glass-effect" data-stat="taken">
+                        <div class="stat-icon-wrapper gradient-2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="taken-count">0</span>
+                            <span class="stat-label">Taken</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card glass-effect" data-stat="pending">
+                        <div class="stat-icon-wrapper gradient-3">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="pending-count">0</span>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card glass-effect" data-stat="streak">
+                        <div class="stat-icon-wrapper gradient-4">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="streak-count">0</span>
+                            <span class="stat-label">Day Streak 🔥</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab Navigation -->
+            <section class="tab-navigation glass-effect animate__animated animate__fadeInUp">
+                <button class="tab-btn active" data-tab="medicines">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19.5 12.5L12 20l-7.5-7.5a5.25 5.25 0 1 1 7.5-7.34 5.25 5.25 0 0 1 7.5 7.34z"/>
+                    </svg>
+                    <span>Medicines</span>
+                </button>
+                <button class="tab-btn" data-tab="schedule">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Schedule</span>
+                </button>
+                <button class="tab-btn" data-tab="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                        <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                    </svg>
+                    <span>Dashboard</span>
+                </button>
+                <button class="tab-btn" data-tab="history">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>History</span>
+                </button>
+            </section>
+
+            <!-- Tab Contents -->
+            <div class="tab-contents">
+                <!-- Medicines Tab -->
+                <div id="medicines-tab" class="tab-content active">
+                    <div class="section-header">
+                        <h3>My Medicines</h3>
+                        <button id="add-medicine-btn" class="add-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add New
+                        </button>
+                    </div>
+                    
+                    <div id="medicines-list" class="medicines-list">
+                        <!-- Medicines will be dynamically added here -->
+                        <div class="empty-state" id="empty-medicines">
+                            <div class="empty-animation">
+                                <div class="empty-pill-icon">
+                                    <div class="empty-pill">
+                                        <div class="empty-pill-half left"></div>
+                                        <div class="empty-pill-half right"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>No Medicines Added</h4>
+                            <p>Tap the "Add New" button to start tracking your medications</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Tab -->
+                <div id="schedule-tab" class="tab-content">
+                    <div class="section-header">
+                        <h3>Today's Schedule</h3>
+                        <div class="filter-pills">
+                            <button class="filter-pill active" data-filter="all">All</button>
+                            <button class="filter-pill" data-filter="pending">Pending</button>
+                            <button class="filter-pill" data-filter="taken">Taken</button>
+                        </div>
+                    </div>
+                    
+                    <div id="schedule-timeline" class="schedule-timeline">
+                        <!-- Schedule items will be added here -->
+                    </div>
+                </div>
+
+                <!-- Dashboard Tab -->
+                <div id="dashboard-tab" class="tab-content">
+                    <div class="dashboard-grid">
+                        <!-- Adherence Chart -->
+                        <div class="dashboard-card glass-effect">
+                            <h4>Weekly Adherence</h4>
+                            <div class="chart-container">
+                                <canvas id="adherence-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Circular Progress -->
+                        <div class="dashboard-card glass-effect">
+                            <h4>Monthly Progress</h4>
+                            <div class="circular-progress-container">
+                                <div class="circular-progress" id="monthly-progress">
+                                    <svg viewBox="0 0 100 100">
+                                        <circle class="progress-bg" cx="50" cy="50" r="45"/>
+                                        <circle class="progress-fill" cx="50" cy="50" r="45" id="progress-circle"/>
+                                    </svg>
+                                    <div class="progress-text">
+                                        <span class="progress-value" id="progress-value">0</span>
+                                        <span class="progress-label">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Medicine Distribution -->
+                        <div class="dashboard-card glass-effect full-width">
+                            <h4>Medicine by Time</h4>
+                            <div class="chart-container">
+                                <canvas id="distribution-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Health Tips -->
+                        <div class="dashboard-card glass-effect tips-card">
+                            <h4>💡 Health Tip</h4>
+                            <div class="tip-content" id="health-tip">
+                                <p>Taking medicines at the same time each day helps maintain consistent levels in your body.</p>
+                            </div>
+                            <button class="tip-refresh" id="refresh-tip">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div id="history-tab" class="tab-content">
+                    <div class="section-header">
+                        <h3>Medication History</h3>
+                        <button class="export-btn" id="export-history">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                            </svg>
+                            Export
+                        </button>
+                    </div>
+                    
+                    <div id="history-list" class="history-list">
+                        <!-- History items will be added here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Floating Action Button -->
+        <button id="fab-btn" class="fab animate__animated animate__bounceIn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+        </button>
+
+        <!-- Bottom Navigation (Mobile) -->
+        <nav class="bottom-nav glass-effect">
+            <button class="nav-item active" data-nav="home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" data-nav="schedule">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Calendar</span>
+            </button>
+            <button class="nav-item fab-placeholder" data-nav="add">
+                <div class="nav-fab">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </div>
+            </button>
+            <button class="nav-item" data-nav="stats">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Stats</span>
+            </button>
+            <button class="nav-item" data-nav="profile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Add Medicine Modal -->
+    <div id="add-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content glass-effect animate__animated">
+            <div class="modal-header">
+                <h3 id="modal-title">Add New Medicine</h3>
+                <button class="modal-close" id="close-modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="medicine-form" class="medicine-form">
+                <div class="form-group">
+                    <label for="med-name">Medicine Name</label>
+                    <div class="input-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19.5 12.5L12 20l-7.5-7.5a5.25 5.25 0 1 1 7.5-7.34 5.25 5.25 0 0 1 7.5 7.34z"/>
+                        </svg>
+                        <input type="text" id="med-name" placeholder="Enter medicine name" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="med-dosage">Dosage</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            <input type="text" id="med-dosage" placeholder="e.g., 500mg" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="med-quantity">Quantity</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="12" y1="8" x2="12" y2="16"/>
+                                <line x1="8" y1="12" x2="16" y2="12"/>
+                            </svg>
+                            <input type="number" id="med-quantity" placeholder="e.g., 1" min="1" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="med-type">Medicine Type</label>
+                    <div class="medicine-types">
+                        <label class="type-option">
+                            <input type="radio" name="med-type" value="pill" checked>
+                            <div class="type-card">
+                                <div class="type-icon">💊</div>
+                                <span>Pill</span>
+                            </div>
+                        </label>
+                        <label class="type-option">
+                            <input type="radio" name="med-type" value="capsule">
+                            <div class="type-card">
+                                <div class="type-icon">💉</div>
+                                <span>Injection</span>
+                            </div>
+                        </label>
+                        <label class="type-option">
+                            <input type="radio" name="med-type" value="syrup">
+                            <div class="type-card">
+                                <div class="type-icon">🧴</div>
+                                <span>Syrup</span>
+                            </div>
+                        </label>
+                        <label class="type-option">
+                            <input type="radio" name="med-type" value="drops">
+                            <div class="type-card">
+                                <div class="type-icon">💧</div>
+                                <span>Drops</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Schedule Times</label>
+                    <div class="time-slots" id="time-slots">
+                        <div class="time-slot">
+                            <input type="time" class="time-input" required>
+                            <button type="button" class="remove-time" style="display: none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-time-btn" id="add-time-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                        Add Another Time
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label>Days</label>
+                    <div class="days-selector">
+                        <label class="day-option">
+                            <input type="checkbox" name="days" value="0">
+                            <span>Sun</span>
+                        </label>
+                        <label class="day-option">
+                            <input type="checkbox" name="days" value="1" checked>
+                            <span>Mon</span>
+                        </label>
+                        <label class="day-option">
+                            <input type="checkbox" name="days" value="2" checked>
+                            <span>Tue</span>
+                        </label>
+                        <label class="day-option">
+                            <input type="checkbox" name="days" value="3" checked>
+                            <span>Wed</span>
+                        </label>
+                        <label class="day-option">
+                            <input type="checkbox" name="days" value="4" checked>
+                            <span>Thu</span>
+                        </label>
+                        <label class="day-option">
+                            <input type="checkbox" name="days" value="5" checked>
+                            <span>Fri</span>
+                        </label>
+                        <label class="day-option">
+                            <input type="checkbox" name="days" value="6">
+                            <span>Sat</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="med-notes">Notes (Optional)</label>
+                    <div class="input-wrapper textarea-wrapper">
+                        <textarea id="med-notes" placeholder="Take after meals, avoid dairy, etc."></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Color Tag</label>
+                    <div class="color-picker">
+                        <label class="color-option">
+                            <input type="radio" name="med-color" value="gradient-1" checked>
+                            <span class="color-swatch gradient-1"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="med-color" value="gradient-2">
+                            <span class="color-swatch gradient-2"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="med-color" value="gradient-3">
+                            <span class="color-swatch gradient-3"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="med-color" value="gradient-4">
+                            <span class="color-swatch gradient-4"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="med-color" value="gradient-5">
+                            <span class="color-swatch gradient-5"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="med-color" value="gradient-6">
+                            <span class="color-swatch gradient-6"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span id="submit-text">Add Medicine</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reminder Notification Modal -->
+    <div id="reminder-modal" class="modal reminder-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content glass-effect animate__animated">
+            <div class="reminder-header">
+                <div class="reminder-icon pulse-animation">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </div>
+                <h3>Time to take your medicine!</h3>
+            </div>
+            
+            <div class="reminder-content" id="reminder-content">
+                <!-- Reminder details will be injected here -->
+            </div>
+            
+            <div class="reminder-actions">
+                <button class="btn btn-outline" id="snooze-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Snooze 10min
+                </button>
+                <button class="btn btn-primary" id="take-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Mark as Taken
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal profile-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content glass-effect animate__animated">
+            <div class="modal-header">
+                <h3>Profile Settings</h3>
+                <button class="modal-close" id="close-profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="profile-form" class="profile-form">
+                <div class="profile-avatar-section">
+                    <div class="profile-avatar">
+                        <div class="avatar-placeholder">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-name">Your Name</label>
+                    <input type="text" id="profile-name" placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Notification Sound</label>
+                    <select id="notification-sound">
+                        <option value="default">Default Chime</option>
+                        <option value="gentle">Gentle Bell</option>
+                        <option value="urgent">Urgent Alert</option>
+                        <option value="melody">Soft Melody</option>
+                    </select>
+                </div>
+                
+                <div class="form-group toggle-group">
+                    <div class="toggle-info">
+                        <label>Enable Notifications</label>
+                        <p>Get reminders when it's time to take medicine</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" id="notifications-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="form-group toggle-group">
+                    <div class="toggle-info">
+                        <label>Dark Mode</label>
+                        <p>Switch to dark theme</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" id="darkmode-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary full-width">Save Changes</button>
+                </div>
+            </form>
+            
+            <div class="profile-footer">
+                <button class="btn btn-danger" id="clear-data-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Clear All Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+    </script>
+    
+    <!-- Main App Script -->
+    <script src="app.js"></script>
+</body>
+</html>
